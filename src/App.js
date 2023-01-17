@@ -16,10 +16,24 @@ function App() {
   const handleSubmit =(e)=>{
     e.preventDefault()
     const form = e.target;
-    const name = form.username.value;
+    const username = form.username.value;
     const password = form.password.value;
-    const result = {name, password};
-    
+    const result = {username, password};
+    fetch('http://localhost:5000/users',{
+       method:'POST',
+       headers:{
+        'content-type':"application/json",
+       },
+       body: JSON.stringify(result),
+    })
+    .then(res => res.json())
+    .then(data => {
+      console.log(data)
+      const newItems = [...peoples, data]
+      setPeople(newItems)
+    })
+    .catch(error => console.error(error))
+    form.reset()
   }
   return (
     <div>
@@ -27,15 +41,13 @@ function App() {
     <form onSubmit={handleSubmit} className='mt-5'>
     <input type="text" name='username' placeholder="username" className="input input-bordered w-full max-w-xs" />
      <input type="password" name='password' placeholder="password" className="input input-bordered w-full max-w-xs my-5" />
-     <button className='btn btn-primary block mx'>Post</button>
+     <button type='submit' className='btn btn-primary block mx'>Post</button>
     </form>
     </div>
   <div className="text-center block">
   {
-    peoples.map(p => <p key={p.id}>{p.email}</p>)
-   }
-   {/* <p>{shows}</p> */}
-   
+    peoples.map(pro => <p key={pro.id}>{pro.username}</p>)
+  }
   </div>
     </div>
   );
